@@ -394,6 +394,7 @@ module.exports = class ColorPicker extends Component {
 	polar (nativeEvent) {
 		const lx = nativeEvent.locationX, ly = nativeEvent.locationY
 		const [x, y] = [lx - this.wheelSize/2, ly - this.wheelSize/2]
+		if (this.props.type === 'board') return { x, y }
 		return {
 			deg: Math.atan2(y, x) * (-180 / Math.PI),
 			radius: Math.sqrt(y * y + x * x) / (this.wheelSize / 2),
@@ -410,9 +411,14 @@ module.exports = class ColorPicker extends Component {
 		}
 	}
 	updateHueSaturation = ({nativeEvent}) => {
-		const {deg, radius} = this.polar(nativeEvent), h = deg, s = 100 * radius, v = this.color.v
+		const {deg, radius, x, y} =
+				this.polar(nativeEvent),
+			h = this.props.type === 'board' ? ((this.wheelSize / 2 + x) / this.wheelSize) * 360 : deg,
+			s = this.props.type === 'board' ? ((this.wheelSize / 2 - y) / this.wheelSize) * 100 : (100 * radius),
+			v = this.props.type === 'board' ? 100 : this.color.v
 		// if(radius > 1 ) return
 		const hsv = {h,s,v}// v: 100} // causes bug
+		console.log(hsv)
 		if(this.props.autoResetSlider === true) {
 			this.slideX.setValue(0)
 			this.slideY.setValue(0)
@@ -602,27 +608,27 @@ module.exports = class ColorPicker extends Component {
 		// console.log('RENDER >>',row,thumbSize,sliderSize)
 		if (type === "board") {
 			return (
-                <View style={[ss.root,row?{flexDirection:'row'}:{},style]}>
-                    { swatches && !swatchesLast && <View style={[ss.swatches,swatchStyle,swatchFirstStyle]} key={'SW'}>{ this.swatches }</View> }
-                    { !swatchesOnly && <View style={[ss.wheel]} key={'$1'} onLayout={this.onSquareLayout}>
-                        { this.wheelWidth>0 && <View style={[{padding:thumbSize/2,width:this.wheelWidth,height:this.wheelWidth}, wheelStyle]}>
-                            <View style={[ss.wheelWrap]}>
-                                <Image style={ss.wheelImg} source={srcBoard} />
-                                <Animated.View style={[ss.wheelThumb,wheelThumbStyle,Elevations[4],{pointerEvents:'none'}]} />
-                                <View style={[ss.cover]} onLayout={this.onWheelLayout} {...wheelPanHandlers} ref={r => { this.wheel = r }}></View>
-                            </View>
-                        </View> }
-                    </View> }
-                    { !swatchesOnly && !sliderHidden && (discrete ? <View style={[ss.swatches,swatchStyle]} key={'$2'}>{ this.disc }</View> : <View style={[ss.slider,sliderStyle]} key={'$2'}>
-                        <View style={[ss.grad,{backgroundColor:hex}]}>
-                            <Image style={ss.sliderImg} source={row?srcSliderRotated:srcSlider} resizeMode="stretch" />
-                        </View>
-                        <Animated.View style={[ss.sliderThumb,sliderThumbStyle,Elevations[4],{pointerEvents:'none'}]} />
-                        <View style={[ss.cover]} onLayout={this.onSliderLayout} {...sliderPanHandlers} ref={r => { this.slider = r }}></View>
-                    </View>) }
-                    { swatches && swatchesLast && <View style={[ss.swatches,swatchStyle]} key={'SW'}>{ this.swatches }</View> }
-                </View>
-            )
+				<View style={[ss.root,row?{flexDirection:'row'}:{},style]}>
+					{ swatches && !swatchesLast && <View style={[ss.swatches,swatchStyle,swatchFirstStyle]} key={'SW'}>{ this.swatches }</View> }
+					{ !swatchesOnly && <View style={[ss.wheel]} key={'$1'} onLayout={this.onSquareLayout}>
+						{ this.wheelWidth>0 && <View style={[{padding:thumbSize/2,width:this.wheelWidth,height:this.wheelWidth}, wheelStyle]}>
+							<View style={[ss.wheelWrap]}>
+								<Image style={ss.wheelImg} source={srcBoard} />
+								<Animated.View style={[ss.wheelThumb,wheelThumbStyle,Elevations[4],{pointerEvents:'none'}]} />
+								<View style={[ss.cover]} onLayout={this.onWheelLayout} {...wheelPanHandlers} ref={r => { this.wheel = r }}></View>
+							</View>
+						</View> }
+					</View> }
+					{ !swatchesOnly && !sliderHidden && (discrete ? <View style={[ss.swatches,swatchStyle]} key={'$2'}>{ this.disc }</View> : <View style={[ss.slider,sliderStyle]} key={'$2'}>
+						<View style={[ss.grad,{backgroundColor:hex}]}>
+							<Image style={ss.sliderImg} source={row?srcSliderRotated:srcSlider} resizeMode="stretch" />
+						</View>
+						<Animated.View style={[ss.sliderThumb,sliderThumbStyle,Elevations[4],{pointerEvents:'none'}]} />
+						<View style={[ss.cover]} onLayout={this.onSliderLayout} {...sliderPanHandlers} ref={r => { this.slider = r }}></View>
+					</View>) }
+					{ swatches && swatchesLast && <View style={[ss.swatches,swatchStyle]} key={'SW'}>{ this.swatches }</View> }
+				</View>
+			)
 		}
 		return (
 			<View style={[ss.root,row?{flexDirection:'row'}:{},style]}>
