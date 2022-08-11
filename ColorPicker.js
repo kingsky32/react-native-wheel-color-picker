@@ -415,10 +415,9 @@ module.exports = class ColorPicker extends Component {
 				this.polar(nativeEvent),
 			h = this.props.type === 'board' ? ((this.wheelSize / 2 + x) / this.wheelSize) * 360 : deg,
 			s = this.props.type === 'board' ? ((this.wheelSize / 2 - y) / this.wheelSize) * 100 : (100 * radius),
-			v = this.props.type === 'board' ? 100 : this.color.v
+			v = this.color.v
 		// if(radius > 1 ) return
 		const hsv = {h,s,v}// v: 100} // causes bug
-		console.log(hsv)
 		if(this.props.autoResetSlider === true) {
 			this.slideX.setValue(0)
 			this.slideY.setValue(0)
