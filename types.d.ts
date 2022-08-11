@@ -41,6 +41,8 @@ export interface ColorPickerProps extends React.Props<ColorPicker> {
   onColorChange?: (color: string) => void,
   /** Callback function providing final color when user stops dragging slider/wheel */
   onColorChangeComplete?: (color: string) => void,
+  /** Custom wheel size */
+  wheelSize?: number,
 }
 
 declare class ColorPicker extends React.Component<ColorPickerProps, any> {

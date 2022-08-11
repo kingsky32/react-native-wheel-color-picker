@@ -184,6 +184,7 @@ module.exports = class ColorPicker extends Component {
 		onInteractionStart: () => {}, // callback function triggered when user begins dragging slider/wheel
 		onColorChange: () => {}, // callback function providing current color while user is actively dragging slider/wheel
 		onColorChangeComplete: () => {}, // callback function providing final color when user stops dragging slider/wheel
+		wheelSize: 0, // wheel size
 		wheelStyle: {} // custom wheel style,
 	}
 	wheelPanResponder = PanResponder.create({
@@ -348,7 +349,7 @@ module.exports = class ColorPicker extends Component {
 		*/
 		this.wheel.measureInWindow((x, y, width, height) => {
 			this.wheelMeasure = {x, y, width, height}
-			this.wheelSize = width
+			this.wheelSize = this.props.wheelSize || width
 			// this.panX.setOffset(-width/2)
 			// this.panY.setOffset(-width/2)
 			this.update(this.state.currentColor)
@@ -606,37 +607,13 @@ module.exports = class ColorPicker extends Component {
 			marginBottom:row?0:margin,
 		}
 		// console.log('RENDER >>',row,thumbSize,sliderSize)
-		if (type === "board") {
-			return (
-				<View style={[ss.root,row?{flexDirection:'row'}:{},style]}>
-					{ swatches && !swatchesLast && <View style={[ss.swatches,swatchStyle,swatchFirstStyle]} key={'SW'}>{ this.swatches }</View> }
-					{ !swatchesOnly && <View style={[ss.wheel]} key={'$1'} onLayout={this.onSquareLayout}>
-						{ this.wheelWidth>0 && <View style={[{padding:thumbSize/2,width:this.wheelWidth,height:this.wheelWidth}, wheelStyle]}>
-							<View style={[ss.wheelWrap]}>
-								<Image style={ss.wheelImg} source={srcBoard} />
-								<Animated.View style={[ss.wheelThumb,wheelThumbStyle,Elevations[4],{pointerEvents:'none'}]} />
-								<View style={[ss.cover]} onLayout={this.onWheelLayout} {...wheelPanHandlers} ref={r => { this.wheel = r }}></View>
-							</View>
-						</View> }
-					</View> }
-					{ !swatchesOnly && !sliderHidden && (discrete ? <View style={[ss.swatches,swatchStyle]} key={'$2'}>{ this.disc }</View> : <View style={[ss.slider,sliderStyle]} key={'$2'}>
-						<View style={[ss.grad,{backgroundColor:hex}]}>
-							<Image style={ss.sliderImg} source={row?srcSliderRotated:srcSlider} resizeMode="stretch" />
-						</View>
-						<Animated.View style={[ss.sliderThumb,sliderThumbStyle,Elevations[4],{pointerEvents:'none'}]} />
-						<View style={[ss.cover]} onLayout={this.onSliderLayout} {...sliderPanHandlers} ref={r => { this.slider = r }}></View>
-					</View>) }
-					{ swatches && swatchesLast && <View style={[ss.swatches,swatchStyle]} key={'SW'}>{ this.swatches }</View> }
-				</View>
-			)
-		}
 		return (
 			<View style={[ss.root,row?{flexDirection:'row'}:{},style]}>
 				{ swatches && !swatchesLast && <View style={[ss.swatches,swatchStyle,swatchFirstStyle]} key={'SW'}>{ this.swatches }</View> }
 				{ !swatchesOnly && <View style={[ss.wheel]} key={'$1'} onLayout={this.onSquareLayout}>
-					{ this.wheelWidth>0 && <View style={[{padding:thumbSize/2,width:this.wheelWidth,height:this.wheelWidth}, wheelStyle]}>
+					{ this.wheelWidth>0 && <View style={[{padding:thumbSize/2,width:this.wheelWidth,height:this.wheelWidth}]}>
 						<View style={[ss.wheelWrap]}>
-							<Image style={ss.wheelImg} source={srcWheel} />
+							<Image style={ss.wheelImg} source={type === 'board' ? srcBoard : srcWheel} />
 							<Animated.View style={[ss.wheelThumb,wheelThumbStyle,Elevations[4],{pointerEvents:'none'}]} />
 							<View style={[ss.cover]} onLayout={this.onWheelLayout} {...wheelPanHandlers} ref={r => { this.wheel = r }}></View>
 						</View>
