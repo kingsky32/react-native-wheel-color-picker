@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {StyleProp, ViewStyle} from "react-native";
 
 export interface ColorPickerProps extends React.Props<ColorPicker> {
   /** Use row or vertical layout */
@@ -42,7 +43,7 @@ export interface ColorPickerProps extends React.Props<ColorPicker> {
   /** Callback function providing final color when user stops dragging slider/wheel */
   onColorChangeComplete?: (color: string) => void,
   /** Custom wheel size */
-  wheelSize?: number,
+  wheelStyle?: StyleProp<ViewStyle>,
 }
 
 declare class ColorPicker extends React.Component<ColorPickerProps, any> {

@@ -23,5 +23,8 @@
     "color",
     "picker"
   ],
-  "typings": "types.d.ts"
+  "typings": "types.d.ts",
+  "devDependencies": {
+    "react-native": "^0.69.4"
+  }
 }

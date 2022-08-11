@@ -184,7 +184,6 @@ module.exports = class ColorPicker extends Component {
 		onInteractionStart: () => {}, // callback function triggered when user begins dragging slider/wheel
 		onColorChange: () => {}, // callback function providing current color while user is actively dragging slider/wheel
 		onColorChangeComplete: () => {}, // callback function providing final color when user stops dragging slider/wheel
-		wheelSize: 0, // wheel size
 		wheelStyle: {} // custom wheel style,
 	}
 	wheelPanResponder = PanResponder.create({
@@ -337,7 +336,7 @@ module.exports = class ColorPicker extends Component {
 	}
 	onSquareLayout = (e) => {
 		let {x, y, width, height} = e.nativeEvent.layout
-		this.wheelWidth = this.props.wheelSize || Math.min(width, height)
+		this.wheelWidth = Math.min(width, height)
 		this.tryForceUpdate()
 	}
 	onWheelLayout = (e) => {
@@ -349,7 +348,7 @@ module.exports = class ColorPicker extends Component {
 		*/
 		this.wheel.measureInWindow((x, y, width, height) => {
 			this.wheelMeasure = {x, y, width, height}
-			this.wheelSize = this.props.wheelSize || width
+			this.wheelSize = width
 			// this.panX.setOffset(-width/2)
 			// this.panY.setOffset(-width/2)
 			this.update(this.state.currentColor)
@@ -611,7 +610,7 @@ module.exports = class ColorPicker extends Component {
 			<View style={[ss.root,row?{flexDirection:'row'}:{},style]}>
 				{ swatches && !swatchesLast && <View style={[ss.swatches,swatchStyle,swatchFirstStyle]} key={'SW'}>{ this.swatches }</View> }
 				{ !swatchesOnly && <View style={[ss.wheel]} key={'$1'} onLayout={this.onSquareLayout}>
-					{ this.wheelWidth>0 && <View style={[{padding:thumbSize/2,width:this.wheelWidth,height:this.wheelWidth}]}>
+					{ this.wheelWidth>0 && <View style={[{width:this.wheelWidth,height:this.wheelWidth}, wheelStyle]}>
 						<View style={[ss.wheelWrap]}>
 							<Image style={ss.wheelImg} source={type === 'board' ? srcBoard : srcWheel} />
 							<Animated.View style={[ss.wheelThumb,wheelThumbStyle,Elevations[4],{pointerEvents:'none'}]} />
