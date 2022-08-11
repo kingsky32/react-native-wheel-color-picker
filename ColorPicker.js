@@ -401,6 +401,12 @@ module.exports = class ColorPicker extends Component {
 		}
 	}
 	cartesian (deg, radius) {
+		if (this.props.type === 'board') {
+			return {
+				left: deg / 360 * this.wheelSize,
+				top: -(radius - 1) * this.wheelSize
+			}
+		}
 		const r = radius * this.wheelSize / 2 // was normalized
 		const rad = Math.PI * deg / 180
 		const x = r * Math.cos(rad)
